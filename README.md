@@ -1,7 +1,5 @@
 # Final Project for GPU Parallel Processing
 
-## Introduction
-
 This project is using CUDA to build a simple convolutional neural network. It has two parts. The first part is the main program. It includes training and testing functions. The second part is for benchmark. It calculates computational performance and memory bandwidth. 
 
 ## Usage
