@@ -1,5 +1,4 @@
 #include <cstdlib>
-#include <vector>
 #include <memory>
 #include <cublas_v2.h>
 #include <cuda.h>
@@ -7,7 +6,6 @@
 #include <time.h>
 
 const static float dt = 1.0E-01f;
-const static float threshold = 1.0E-02f;
 
 class Layer {
 public:
@@ -485,16 +483,16 @@ static void test() {
       error++;
     }
   }
-  fprintf(stdout, "Test Error: %.2lf%%\n", double(error) / double(test_size) * 100.0);
+  printf("Test Error: %.2lf%%\n", double(error) / double(test_size) * 100.0);
 }
 
 static void learn() {
   static cublasHandle_t blas;
   cublasCreate(&blas);
   float err;
-  int iter = 50;
-  double time_taken = 0.0;
-  fprintf(stdout, "Start Training...\n");
+  int iter = 10;
+  double total_time = 0.0;
+  printf("Start Training...\n");
   for (int i = 0; i < iter; i++) {
   //while (iter < 0 || iter-- > 0) {
     err = 0.0f;
@@ -507,12 +505,12 @@ static void learn() {
       calc_error<<<10, 1>>>(l_f.d_preact, l_f.output, train_data[j].label, 10);
       cublasSnrm2(blas, 10, l_f.d_preact, 1, &temp_err);
       err += temp_err;
-      time_taken += back_prop();
+      total_time += back_prop();
     }
     err /= train_size;
-    fprintf(stdout, "Epoch %d/50, training error: %e, total training time: %lf s.\n", i + 1, err, time_taken);
+    printf("Epoch %d/10, training error: %e, total training time: %lf s.\n", i + 1, err, total_time);
   }
-  fprintf(stdout, "\n Total training time: %lf s.\n", time_taken);
+  printf("\n Total training time: %lf s.\n", total_time);
 }
 
 static void loaddata() {
@@ -520,33 +518,33 @@ static void loaddata() {
   int r1 = load_mnist("data/train-images-idx3-ubyte", "data/train-labels-idx1-ubyte", &train_data, &train_size);
   int r2 = load_mnist("data/t10k-images-idx3-ubyte", "data/t10k-labels-idx1-ubyte", &test_data, &test_size);
   if (r1 != 0) {
-    fprintf(stderr, "Failed to load training dataset. Now exiting. \n");
+    printf("Failed to load training dataset. Now exiting. \n");
     exit(-1);
   }
   if (r2 != 0) {
-    fprintf(stderr, "Failed to load test dataset. Now exiting. \n");
+    printf("Failed to load test dataset. Now exiting. \n");
     exit(-1);
   }
-  fprintf(stdout, "Size of training data: %d\n", train_size);
-  fprintf(stdout, "Size of test data: %d\n", test_size);
+  printf("Size of training data: %d\n", train_size);
+  printf("Size of test data: %d\n", test_size);
 }
 
 static void individual_test(int i) {
-  fprintf(stdout, "Number %d data in test dataset.\n", i);
-  fprintf(stdout, "Classification result: %d. Ground truth: %d\n\n", classify(test_data[i].data), test_data[i].label);
+  printf("Number %d data in test dataset.\n", i);
+  printf("Classification result: %d. Ground truth: %d\n\n", classify(test_data[i].data), test_data[i].label);
 }
 
 int main() {
   srand(time(NULL));
   CUresult err = cuInit(0);
   if (err != CUDA_SUCCESS) {
-    fprintf(stderr, "CUDA initialization failed with error code %d\n", err);
+    printf("CUDA initialization failed with error code %d\n", err);
     return 1;
   }
   loaddata();
   learn();
   test();
-  fprintf(stdout, "Start randomly select 5 data from test dataset to test.\n");
+  printf("Start randomly select 5 data from test dataset to test.\n");
   for (int i = 0; i < 5; i++) {
     int j = rand() % 10000;
     individual_test(j);
