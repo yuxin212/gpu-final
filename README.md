@@ -1,20 +1,31 @@
 # Final Project for GPU Parallel Processing
 
-This project is using CUDA to build a simple convolutional neural network. It has two parts. The first part is the main program. It includes training and testing functions. The second part is for benchmark. It calculates computational performance and memory bandwidth. 
+This project is using CUDA to build a simple convolutional neural network. It includes training and testing functions. 
 
 ## Usage
 
 Before use, make sure CUDA is installed. 
 
-### For main program: 
-
 First make the program
 
 ```
-nvcc -lcuda -lcublas main.cu
+nvcc -lcuda -lcublas main.cu -o cnn
 ````
 
-Then run the executable file `./a.out`. 
+Then run the executable file `./cnn`. 
 
-### For benchmark: 
+## Test Performance
 
+It is recommended to reduce the number of epoch before test performance. 
+
+```
+sudo nvprof --metrics dram_read_throughput,dram_write_throughput,flop_count_sp ./cnn
+```
+
+or 
+
+```
+sudo nv-nsight-cu-cli --metrics dram_read_throughput,dram_write_throughput,flop_count_sp cnn
+```
+
+If previous one doesn't work. 
