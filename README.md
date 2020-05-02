@@ -6,6 +6,8 @@ This project is using CUDA to build a simple convolutional neural network. It in
 
 Before use, make sure CUDA is installed. 
 
+### Training and Testing
+
 First make the program
 
 ```
@@ -14,7 +16,7 @@ nvcc -lcuda -lcublas main.cu -o cnn
 
 Then run the executable file `./cnn`. 
 
-## Test Performance
+## Performance
 
 It is recommended to reduce the number of epoch before test performance. 
 
