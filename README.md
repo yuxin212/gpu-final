@@ -16,7 +16,7 @@ nvcc -lcuda -lcublas main.cu -o cnn
 
 Then run the executable file `./cnn`. 
 
-## Performance
+### Performance
 
 It is recommended to reduce the number of epoch before test performance. 
 
